@@ -1,0 +1,34 @@
+bank <- read.csv(file.choose(),sep=";") # Choose the bank-full Data set
+sum(is.na(bank))
+
+bank <- na.omit(bank)
+colnames(bank)
+#created dummy var
+install.packages("dummies")
+library("dummies")
+bank.new <- dummy.data.frame(bank, sep = ".")
+dummy(bank$job, sep = ".")
+#splitted train and test
+library(caTools)
+set.seed(123)
+split = sample.split(bank$y, SplitRatio = 0.75)
+training_set = subset(bank, split == TRUE)
+test_set = subset(bank, split == FALSE)
+
+# Preparing a model
+classifier = glm(formula = y ~ .,
+                 family = binomial,
+                 data = training_set)
+classifier
+#predict y of test set
+pred1 <- predict(classifier,test_set)
+pred1                    
+y_pred = ifelse(pred1 > 0.5, 1, 0)
+summary(classifier)
+#conf matrix
+cm = table(test_set[, 17], y_pred > 0.5)
+cm
+#accuracy
+Accuracy<-sum(diag(cm)/sum(cm))
+Accuracy
+
