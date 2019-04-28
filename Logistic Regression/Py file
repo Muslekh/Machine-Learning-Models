@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 11 13:07:02 2019
+
+@author: user
+"""
+import pandas as pd
+import numpy as np
+import seaborn as sb
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split # train and test 
+from sklearn import metrics
+from sklearn import preprocessing
+from sklearn.metrics import classification_report
+data=pd.read_csv('bank-full.csv',sep=";")
+
+data.columns
+data_dummies=pd.get_dummies(data[["job","marital","education","default","balance","housing","loan","contact","month","poutcome","y"]])
+data.drop(["job","marital","education","default","balance","housing","loan","contact","month","poutcome","y"],inplace=True,axis=1)
+data = pd.concat([data,data_dummies],axis=1)
+X = data.iloc[:, :-1].values
+df=pd.DataFrame(X)
+y = data.iloc[:, 16].values
+df_y=pd.DataFrame(y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 0)
+classifier = LogisticRegression()
+classifier.fit(X_train, y_train)
+y_pred = classifier.predict(X_test)
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+from sklearn.metrics import classification_report
+print(classification_report(y_test,y_pred))
