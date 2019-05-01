@@ -1,0 +1,18 @@
+# Support Vector Machine (SVM)
+
+# Importing the dataset
+dataset = read.csv(file.choose())
+dataset = dataset[3:30]
+
+
+# Splitting the dataset into the Training set and Test set
+
+training_set<-(dataset[100:489,])
+test_set<-rbind(dataset[1:99,],dataset[490:517,])
+# Fitting SVM to the Training set
+library(kernlab)
+library(caret)
+model_besseldot<-ksvm(area ~.,data = training_set,kernel = "besseldot")
+pred_bessel<-predict(model_besseldot,newdata=test_set[,-9])
+mean(pred_bessel==test_set$area)
+final=data.frame(pred_bessel,test_set[,9])
